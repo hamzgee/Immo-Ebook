@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Automotive Immobilizer Programming - Master Reference Portal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           1. CORE DESIGN SYSTEM & MASTER VARIABLES
+           ========================================================================== */
+        :root {
+            --bg-main: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-sidebar: #0b1329;
+            --bg-border: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --brand-blue: #38bdf8;
+            --brand-amber: #fbbf24;
+            --brand-red: #f87171;
+            --brand-green: #34d399;
+            --font-code: 'Fira Code', monospace;
+            --sidebar-width: 300px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.65;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ==========================================================================
+           2. SIDEBAR NAVIGATION PANELS
+           ========================================================================== */
+        aside.sidebar-nav {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--bg-border);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-brand span {
+            color: var(--brand-blue);
+        }
+
+        .nav-group-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--brand-blue);
+            margin: 1.75rem 0 0.5rem 0;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.55rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #ffffff;
+            background-color: var(--bg-surface);
+        }
+        
+        .nav-links a.active {
+            border-left: 3px solid var(--brand-blue);
+            border-radius: 0 6px 6px 0;
+            padding-left: calc(0.75rem - 3px);
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--bg-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            z-index: 1100;
+            padding: 0 1.5rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .menu-toggle-btn {
+            background: none;
+            border: 1px solid var(--bg-border);
+            color: var(--text-primary);
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* ==========================================================================
+           3. MAIN SHELL AND TYPOGRAPHY ARCHITECTURE
+           ========================================================================== */
+        main.main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1400px;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .chapter-container {
+            margin-bottom: 6rem;
+            padding-top: 1rem;
+            border-bottom: 1px dashed var(--bg-border);
+            padding-bottom: 4rem;
+        }
+
+        .module-category {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--brand-amber);
+            letter-spacing: 0.12em;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        h1.main-book-title {
+            font-size: 2.85rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            background: linear-gradient(45deg, #ffffff, var(--brand-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2.chapter-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 2rem 0 1.25rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--bg-border);
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-top: 2.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--brand-blue);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.02rem;
+        }
+
+        /* Information Panels */
+        .panel {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .panel.danger { border-left: 4px solid var(--brand-red); }
+        .panel.pro-tip { border-left: 4px solid var(--brand-blue); }
+        .panel.success { border-left: 4px solid var(--brand-green); }
+
+        .panel-heading {
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Micro-Component Specifications Box */
+        .chip-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            background: #090d16;
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .spec-item {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .spec-item strong {
+            display: block;
+            color: #ffffff;
+            font-family: var(--font-code);
+            font-size: 1.05rem;
+            margin-top: 0.25rem;
+        }
+
+        .code-text {
+            font-family: var(--font-code);
+            background-color: rgba(51, 65, 85, 0.6);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--brand-blue);
+            font-size: 0.9em;
+        }
+
+        /* List elements */
+        ul.bullet-list, ol.ordered-steps {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        ul.bullet-list li, ol.ordered-steps li {
+            margin-bottom: 0.6rem;
+        }
+
+        /* ==========================================================================
+           4. DATA MATRIX SEARCH ARCHITECTURE & REGISTERS
+           ========================================================================== */
+        .search-wrapper {
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--bg-border);
+            padding: 0.95rem 1.25rem;
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .table-responsive-frame {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--bg-border);
+            border-radius: 8px;
+            background-color: #0b1329;
+            margin-bottom: 2rem;
+        }
+
+        table.data-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        table.data-matrix th, table.data-matrix td {
+            padding: 1.1rem 1.25rem;
+            border-bottom: 1px solid var(--bg-border);
+        }
+
+        table.data-matrix th {
+            background-color: var(--bg-surface);
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+        }
+
+        table.data-matrix tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        table.data-matrix tbody tr:hover {
+            background-color: rgba(51, 65, 85, 0.3);
+        }
+
+        /* Dynamic Difficulty Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .badge.easy { background-color: rgba(52, 211, 153, 0.15); color: var(--brand-green); }
+        .badge.medium { background-color: rgba(251, 191, 36, 0.15); color: var(--brand-amber); }
+        .badge.hard { background-color: rgba(248, 113, 113, 0.15); color: var(--brand-red); }
+
+        /* Hex Windows */
+        .hex-dump-panel {
+            background: #090d16;
+            border: 1px solid var(--bg-border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .hex-line {
+            font-family: var(--font-code);
+            color: #a7f3d0;
+            font-size: 0.85rem;
+            white-space: pre;
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.02em;
+        }
+
+        .hex-highlight {
+            color: var(--brand-amber);
+            font-weight: 700;
+            background-color: rgba(251, 191, 36, 0.1);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* ==========================================================================
+           5. RESPONSIVE BREAKPOINTS (MEDIA QUERIES)
+           ========================================================================== */
+        @media (max-width: 1024px) {
+            body { flex-direction: column; }
+            .mobile-header { display: flex; }
+            aside.sidebar-nav { transform: translateX(-100%); top: 60px; z-index: 1050; width: 100%; max-width: 320px; }
+            aside.sidebar-nav.open { transform: translateX(0); }
+            main.main-content { margin-left: 0; width: 100%; padding: 5.5rem 1.25rem 2rem 1.25rem; }
+            h1.main-book-title { font-size: 2.1rem; }
+            h2.chapter-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-header">
+        <div class="mobile-title">⚡ <span>ImmoProg</span> Field Guide</div>
+        <button class="menu-toggle-btn" id="menuToggleBtn">Menu ☰</button>
+    </div>
+
+    <aside class="sidebar-nav" id="sidebarMenu">
+        <div class="sidebar-brand">
+            ⚡ <span>ImmoProg</span> Portal
+        </div>
+        
+        <div class="nav-group-title">Foundations</div>
+        <ul class="nav-links">
+            <li><a href="#intro" class="nav-item active">01. Safety & Licensing</a></li>
+            <li><a href="#skills" class="nav-item">02. Bench Skills Checklist</a></li>
+            <li><a href="#db-matrix" class="nav-item">03. Live Master Database</a></li>
+        </ul>
+
+        <div class="nav-group-title">Vehicle Modules</div>
+        <ul class="nav-links">
+            <li><a href="#acura-honda" class="nav-item">04. Honda & Acura Line</a></li>
+            <li><a href="#vag-group" class="nav-item">05. VAG (Audi, VW, Bentley)</a></li>
+            <li><a href="#bmw-mini" class="nav-item">06. BMW & Mini Cooper</a></li>
+            <li><a href="#gm-group" class="nav-item">07. General Motors Array</a></li>
+            <li><a href="#chrysler-dodge" class="nav-item">08. Chrysler, Dodge & Jeep</a></li>
+            <li><a href="#toyota-lexus" class="nav-item">09. Toyota & Lexus Core</a></li>
+            <li><a href="#euro-specialty" class="nav-item">10. Specialty European Lines</a></li>
+        </ul>
+
+        <div class="nav-group-title">Advanced Workflows</div>
+        <ul class="nav-links">
+            <li><a href="#hex-theory" class="nav-item">11. Hex Dump Data Extraction</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <section id="intro" class="chapter-container">
+            <span class="module-category">Module 01</span>
+            <h1 class="main-book-title">Advanced Automotive Immobilizer Programming</h1>
+            <p>
+                Welcome to the specialized field documentation portal. This layout digitizes the core field configurations gathered over decades of active bench operations. It serves as a direct roadmap for field apprentices looking to advance past standard OBD code manipulation into direct in-circuit hardware memory engineering.
+            </p>
+            
+            <div class="panel danger">
+                <div class="panel-heading" style="color: var(--brand-red);">⚠️ CRITICAL CORE COMMANDMENT</div>
+                <p>
+                    When dealing with internal microprocessor arrays or EEPROM surface components, an unexpected thermal or electrical pulse can instantly freeze the target module's operating loop. 
+                    <strong>YOU MUST ALWAYS READ, VERIFY VIA MULTIPLE READ PASSES, AND ARCHIVE AN ORIGINAL UNTOUCHED FILE (.BIN DUMP) ONTO SEPARATE SYSTEM DRIVES BEFORE EXECUTING CONVERSIONS OR WRITING STEPS.</strong>
+                </p>
+            </div>
+
+            <h3>Legal Disclaimer & Operating Policy</h3>
+            <p>
+                All procedures, tool selections, pin definitions, and technical parameters listed here reflect experimental field results. No structural warranty or operational liability is offered. Locksmiths assume complete economic and technical risk upon opening vehicle security computers.
+            </p>
+        </section>
+
+        <section id="skills" class="chapter-container">
+            <span class="module-category">Module 02</span>
+            <h2 class="chapter-title">Prerequisite Technical Competence</h2>
+            <p>Before allowing juniors to execute independent field operations on live vehicle systems, verify absolute technical proficiency in these four core areas:</p>
+            
+            <ol class="ordered-steps">
+                <li>
+                    <strong>Transponder Taxonomy Profiles:</strong> Complete understanding of transponder families, differentiating Fixed Transponders, Crypto-based transponders, and Rolling Code security handshakes.
+                </li>
+                <li>
+                    <strong>Physical Micro-Component Interfacing:</strong> Quick and absolute confirmation of <strong>Pin 1 Location</strong> using chip chamfers, laser dots, indent dimples, or circuit board silkscreen markers.
+                </li>
+                <li>
+                    <strong>Micro-Soldering & Heat Management:</strong> Safe component extraction using precision hot air rework stations, premium flux paste, and quick cooling. *Training Rule: Force apprentices to cleanly strip and swap SOIC chips on dead consumer electronics boards before clearing them for automotive ECUs.*
+                </li>
+                <li>
+                    <strong>Data Backup & Architecture Dispersal:</strong> Clean storage structures using strict filename schemas: <code>Make_Model_Year_ModuleType_ChipLabel_ORIGINAL.bin</code>.
+                </li>
+            </ol>
+        </section>
+
+        <section id="db-matrix" class="chapter-container">
+            <span class="module-category">Module 03</span>
+            <h2 class="chapter-title">Live Master Compatibility Database</h2>
+            <p>Use the global search tool below to filter through the full structural index from the manual. Search dynamically by manufacturer name, model line, tool requirements, or target memory chip families.</p>
+            
+            <div class="search-wrapper">
+                <input type="text" id="globalMatrixFilter" class="search-input" placeholder="Filter index... (e.g., Audi, 93C56, Orange 5, CAS, EWS)...">
+            </div>
+
+            <div class="table-responsive-frame">
+                <table class="data-matrix" id="masterDatabaseTable">
+                    <thead>
+                        <tr>
+                            <th>Manufacturer</th>
+                            <th>Model Line</th>
+                            <th>Year Boundary</th>
+                            <th>Programmer Tool</th>
+                            <th>Software Target</th>
+                            <th>Module Component Core</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Acura</td><td>NSX</td><td>1997 – 2005</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Honda Type 1</td></tr>
+                        <tr><td>Acura</td><td>RL Base</td><td>1996 – 2004</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Honda Type 1</td></tr>
+                        <tr><td>Honda</td><td>Element</td><td>2007</td><td><span class="code-text">TMPro</span></td><td>IKeyClone</td><td>Honda Type 5</td></tr>
+                        <tr><td>Honda</td><td>Prelude</td><td>1997 – 2002</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Honda Type 1</td></tr>
+                        <tr><td>Audi</td><td>A6 Immo Layout</td><td>2001 – 2005.5</td><td><span class="code-text">XProg / AR32</span></td><td>Tango</td><td>Vag Page 1 / Page 6</td></tr>
+                        <tr><td>Audi</td><td>A6 Modern Platform</td><td>2005.5 – 2009</td><td><span class="code-text">SMOK Unit</span></td><td>Tango</td><td>Vag Page 12</td></tr>
+                        <tr><td>Audi</td><td>A8 Engine Base</td><td>2004 – 2006</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Vag Page 26</td></tr>
+                        <tr><td>Audi</td><td>TT Sports Box</td><td>2001</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>Vag Page 45</td></tr>
+                        <tr><td>Bentley</td><td>Continental</td><td>2005 – 2009</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Vag Page 26</td></tr>
+                        <tr><td>VW</td><td>Beetle Line</td><td>2000 – 2005</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>Vag Page 45 [Image 1]</td></tr>
+                        <tr><td>VW</td><td>Cabrio Box</td><td>2000 – 2004</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Vag Page 32 [Image 1]</td></tr>
+                        <tr><td>VW</td><td>CC Luxury Sedan</td><td>2007 – 2013</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>Vag Page 53 [Image 1]</td></tr>
+                        <tr><td>VW</td><td>Eurovan</td><td>2000 – 2004</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Vag Page 18 [Image 1]</td></tr>
+                        <tr><td>VW</td><td>Jetta Base</td><td>2000 – 2005.5</td><td><span class="code-text">XProg</span></td><td>Tango</td><td>Vag Page 20 [Image 1]</td></tr>
+                        <tr><td>VW</td><td>Passat Base</td><td>2006 – 2010</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>Vag Page 32 [Image 1]</td></tr>
+                        <tr><td>VW</td><td>Touareg SUV</td><td>2004 – 2006</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Vag Page 26 [Image 1]</td></tr>
+                        <tr><td>BMW</td><td>3/5/7/X3/X5 Core Lines</td><td>1994 – 2005</td><td><span class="code-text">AK90 Master</span></td><td>IKeyClone</td><td>BMW Page 7 (EWS Array)</td></tr>
+                        <tr><td>BMW</td><td>3-Series / X3 Custom</td><td>2006 – 2008</td><td><span class="code-text">SMOK / AK90</span></td><td>Tango</td><td>BMW Page 1 / Page 4 (CAS)</td></tr>
+                        <tr><td>Mini</td><td>Cooper Base</td><td>2001 – 2005</td><td><span class="code-text">AK90 Master</span></td><td>IKeyClone</td><td>BMW Page 7 Alignment</td></tr>
+                        <tr><td>Mini</td><td>Cooper Coupe</td><td>2006</td><td><span class="code-text">AK90 / SMOK</span></td><td>Tango</td><td>BMW Page 4 / Page 1</td></tr>
+                        <tr><td>Buick</td><td>LaCrosse</td><td>2010</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>GM Page 17</td></tr>
+                        <tr><td>Cadillac</td><td>Catera Layout</td><td>1997 – 2001</td><td><span class="code-text">Orange 5</span></td><td>ZedBull</td><td>GM Page 8</td></tr>
+                        <tr><td>Cadillac</td><td>CTS / DTS</td><td>2006 – 2008</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>GM Page 1</td></tr>
+                        <tr><td>Chevrolet</td><td>Camaro / Cruze / Sonic</td><td>2010 – 2013</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>GM Page 17 Array</td></tr>
+                        <tr><td>Chevrolet</td><td>Impala / Suburban / HHR</td><td>2006 – 2009.5</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>GM Page 1</td></tr>
+                        <tr><td>Chevrolet</td><td>Malibu Segment</td><td>2005 – 2007</td><td><span class="code-text">Orange 5</span></td><td>TMPro Core</td><td>GM Page 11</td></tr>
+                        <tr><td>Pontiac</td><td>Torrent</td><td>2009</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>GM Page 1</td></tr>
+                        <tr><td>Saturn</td><td>Outlook</td><td>2007</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>GM Page 1</td></tr>
+                        <tr><td>Chrysler</td><td>300 / Concorde / Sebring</td><td>1998 – 2000</td><td><span class="code-text">AR32 / Orange 5</span></td><td>Tango / ZedBull</td><td>CHRY 1 / CHRY 6 Systems</td></tr>
+                        <tr><td>Dodge</td><td>Durango / Intrepid Line</td><td>1998 – 2007</td><td><span class="code-text">SMOK / Orange 5</span></td><td>Tango Panel</td><td>CHRY 23 Matrix Target</td></tr>
+                        <tr><td>Jeep</td><td>Grand Cherokee / Liberty</td><td>1998 – 2008</td><td><span class="code-text">AR32 / SMOK</span></td><td>Tango Core</td><td>CHRY 11 / CHRY 23 Assemblies</td></tr>
+                        <tr><td>Chrysler</td><td>Crossfire Layout</td><td>2004</td><td><span class="code-text">Orange 5</span></td><td>IKeyClone</td><td>MB 20 SKREEM Module</td></tr>
+                        <tr><td>Dodge</td><td>Sprinter (Van Line)</td><td>2002 – 2006</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>MB 8 Architecture</td></tr>
+                        <tr><td>Mercedes</td><td>Sprinter Chassis</td><td>2007 – 2014</td><td><span class="code-text">SMOK Unit</span></td><td>Tango</td><td>MB 13 Architecture</td></tr>
+                        <tr><td>Lexus</td><td>ES/GS/IS/LS/LX/RX Systems</td><td>1997 – 2003</td><td><span class="code-text">AR32 / Red Pen</span></td><td>Tango / ZedBull</td><td>Toyota Page 1 / Page 9 Data</td></tr>
+                        <tr><td>Toyota</td><td>4Runner / Avalon / Camry</td><td>1998 – 2004</td><td><span class="code-text">AR32 / Red Pen</span></td><td>Tango / ZedBull</td><td>Toyota Page 1 Transponder Unit</td></tr>
+                        <tr><td>Toyota</td><td>Camry [Delco Custom]</td><td>1998 – 1999</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Toyota Page 16 Core</td></tr>
+                        <tr><td>Toyota</td><td>FJ Cruiser Platform</td><td>2010.5</td><td><span class="code-text">AR32</span></td><td>Tango</td><td>Toyota Page 23 Location</td></tr>
+                        <tr><td>Jaguar</td><td>X-Type Setup</td><td>2003 – 2004</td><td><span class="code-text">SMOK Unit</span></td><td>Tango</td><td>Jaguar Page 1 Line</td></tr>
+                        <tr><td>Mazda</td><td>626 / Miata / MPV Core</td><td>1998 – 2004</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>Mazda Page 1 / Page 4</td></tr>
+                        <tr><td>Mercedes</td><td>ML-Class (ML320-ML500)</td><td>1998 – 2005</td><td><span class="code-text">Orange 5</span></td><td>Tango</td><td>MB Page 1 (AAM/EAM Boxes)</td></tr>
+                        <tr><td>Nissan</td><td>350Z / Altima / Maxima</td><td>2004 – 2008</td><td><span class="code-text">AR32</span></td><td>IKeyClone</td><td>Nissan Page 1 Interface</td></tr>
+                        <tr><td>Porsche</td><td>911 / Boxster Array</td><td>1997 – 2008</td><td><span class="code-text">TMPro / AR32</span></td><td>TMPro / Tango</td><td>Porsche Page 1 Reference</td></tr>
+                        <tr><td>Saab</td><td>9-3 / 9-5 Assemblies</td><td>2004.5 – 2009</td><td><span class="code-text">AR32 Unit</span></td><td>TMPro Core</td><td>Saab Page 1 Reference</td></tr>
+                        <tr><td>Subaru</td><td>Forester / WRX / Impreza</td><td>2013 – 2015</td><td><span class="code-text">ZedFull Hub</span></td><td>ZedFull Core</td><td>Subaru Page 1 Control Matrix</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="acura-honda" class="chapter-container">
+            <span class="module-category">Module 04</span>
+            <h2 class="chapter-title">Honda & Acura In-Circuit Frameworks</h2>
+            <p>
+                Early generation operations across the Acura NSX, RL, and Honda Prelude configurations utilize proprietary localized memory maps. Because these module layouts utilize distinct physical component tracks, standard code tools fail to communicate.
+            </p>
+
+            <div class="chip-specs">
+                <div class="spec-item">Target Board: <strong>Immobilizer Control ECU Array</strong></div>
+                <div class="spec-item">Onboard Chip Footprint: <strong>AR32 Mask Array (SOIC8 Surface Mount)</strong></div>
+                <div class="spec-item">Extraction Protocol: <strong>Desolder via Hot Air at 340°C or use Dedicated EEPROM Clips</strong></div>
+            </div>
+
+            <div class="panel pro-tip">
+                <div class="panel-heading" style="color: var(--brand-blue);">⚡ Operational Field Note: Honda Element (2007)</div>
+                <p>
+                    Unlike earlier platforms, the 2007 Honda Element routes security parameters through an alternate algorithmic structure. Process this specific module using the <span class="code-text">TMPro</span> hardware setup, then parse through the <span class="code-text">IKeyClone</span> compilation engine to drop key registers straight into active fields.
+                </p>
+            </div>
+        </section>
+
+        <section id="vag-group" class="chapter-container">
+            <span class="module-category">Module 05</span>
+            <h2 class="chapter-title">VAG Subsystem Architectures (Audi, VW, Bentley)</h2>
+            <p>
+                The Volkswagen Audi Group platform features highly integrated component security. The data interfaces are separated cleanly across model generations:
+            </p>
+
+            <h3>Audi A6 Platforms (2001 – 2005.5 vs. 2005.5 – 2009)</h3>
+            <p>
+                Early platforms isolate data parameters inside accessible memory spaces. Use <span class="code-text">XProg</span> or the <span class="code-text">AR32</span> interface box to pull data logs, then map the file through <span class="code-text">Tango</span>. 
+                For modern 2005.5+ lines, security is integrated directly into the module logic. Juniors must use the advanced hardware line provided by <span class="code-text">SMOK</span> to isolate security bytes cleanly.
+            </p>
+
+            <div class="panel success">
+                <div class="panel-heading" style="color: var(--brand-green);">🔒 High-End Matrix Match: Audi A8 & Bentley Continental</div>
+                <p>
+                    The Audi A8 (2004–2006) and the Bentley Continental (2005–2009) share identical foundational access points. Use the <span class="code-text">AR32</span> tool array on these luxury platforms to extract the core diagnostic dump file, then let <span class="code-text">Tango</span> generate functional transponder image configurations.
+                </p>
+            </div>
+
+            <h3>Volkswagen Layout Flags (Beetle, Passat, CC)</h3>
+            <ul class="bullet-list">
+                <li><strong>VW Beetle (2000–2005):</strong> Process onboard microchips via <span class="code-text">Orange 5</span> before uploading to data conversion platforms.</li>
+                <li><strong>VW Passat & CC Lines (2006–2013):</strong> High-density memory blocks require precise connection points. Isolate the target registers using <span class="code-text">Orange 5</span> and use the dedicated conversion engine inside <span class="code-text">Tango</span> to complete transponder validation.</li>
+            </ul>
+        </section>
+
+        <section id="bmw-mini" class="chapter-container">
+            <span class="module-category">Module 06</span>
+            <h2 class="chapter-title">BMW & Mini Cooper Security Layers (EWS vs. CAS)</h2>
+            <p>
+                BMW systems change processing steps significantly based on generation thresholds. Make sure apprentices double-check module production stickers before starting work.
+            </p>
+
+            <h3>The EWS Generation Era (1994 – 2005)</h3>
+            <p>
+                Found on early 3/5/7-Series, X3, X5, and Mini Cooper platforms, these vehicles utilize physical EWS computer arrays with internal security masks like <span class="code-text">0D60J</span> or <span class="code-text">2D47J</span>.
+            </p>
+
+            <div class="panel pro-tip">
+                <div class="panel-heading" style="color: var(--brand-blue);">🛠️ Master Tool Assignment for EWS</div>
+                <p>
+                    Instruct juniors to use the dedicated <span class="code-text">AK90 Master Programmer</span> tool to read EWS modules on the bench. Once verification passes, use <span class="code-text">IKeyClone</span> to finalize data writes directly onto the target transponder chip.
+                </p>
+            </div>
+
+            <h3>The Car Access System (CAS) Era (2006 – 2008)</h3>
+            <p>
+                Modern iterations shift files into secure CAS microchips. Process these modules on the bench using either the <span class="code-text">SMOK</span> interface pipeline or an upgraded <span class="code-text">AK90</span> variant, then use <span class="code-text">Tango</span> to construct live transponders.
+            </p>
+        </section>
+
+        <section id="gm-group" class="chapter-container">
+            <span class="module-category">Module 07</span>
+            <h2 class="chapter-title">General Motors Integrated Board Architectures</h2>
+            <p>
+                GM platforms distribute security lines across Body Control Modules (BCM) and standalone tracking boxes depending on model year variations.
+            </p>
+
+            <div class="chip-specs">
+                <div class="spec-item">Platform Line A: <strong>Chevrolet Impala / Suburban / GMC Acadia (2006–2009.5)</strong></div>
+                <div class="spec-item">Hardware Interface: <strong>AR32 Reader Box Array</strong></div>
+                <div class="spec-item">Conversion Engine: <strong>Tango Software Module 1</strong></div>
+            </div>
+
+            <div class="chip-specs">
+                <div class="spec-item">Platform Line B: <strong>Chevrolet Camaro / Cruze / Sonic / Buick LaCrosse (2010–2013)</strong></div>
+                <div class="spec-item">Hardware Interface: <strong>AR32 Serial Line Protocol</strong></div>
+                <div class="spec-item">Conversion Engine: <strong>Tango Software Module 17</strong></div>
+            </div>
+
+            <div class="panel danger">
+                <div class="panel-heading" style="color: var(--brand-red);">⚠️ Field Trap: Cadillac Catera & Chevrolet Malibu (2005–2007)</div>
+                <p>
+                    These model setups are outlier builds. The Cadillac Catera demands an <span class="code-text">Orange 5</span> hardware read parsed through <span class="code-text">ZedBull</span>. The mid-2000s Chevrolet Malibu variants shift to an alternative configuration that must be processed using <span class="code-text">Orange 5</span> paired with the specialized <span class="code-text">TMPro Core</span> engine.
+                </p>
+            </div>
+        </section>
+
+        <section id="chrysler-dodge" class="chapter-container">
+            <span class="module-container">Module 08</span>
+            <h2 class="chapter-title">Chrysler, Dodge, Jeep & Sprinter Processing</h2>
+            <p>
+                Domestic configurations route system checks through variable structural modules. Early builds isolate fields, whereas later systems integrate them entirely.
+            </p>
+
+            <h3>The SKIM Module Era (1998 – 2000)</h3>
+            <p>
+                Chrysler 300, Concorde, Sebring, Dodge Intrepid, and Jeep Grand Cherokee lines store rolling authorization parameters inside local standalone Sentry Key Immobilizer Modules (SKIM). Use the <span class="code-text">AR32</span> or <span class="code-text">Orange 5</span> programmer platforms, then process the file via <span class="code-text">Tango</span> or <span class="code-text">ZedBull</span>.
+            </p>
+
+            <h3>The Modern Wireless Control Module Era (2004 – 2008+)</h3>
+            <p>
+                Later Chrysler Pacifica, Dodge Grand Caravan, and Jeep Liberty builds route checks through upgraded configurations. Read these layouts with the <span class="code-text">AR32</span>, then process through <span class="code-text">Tango</span>. For high-density platforms like the 2005–2007 Dodge Durango, use the <span class="code-text">SMOK</span> interface to securely read the component.
+            </p>
+
+            <div class="panel success">
+                <div class="panel-heading" style="color: var(--brand-green);">🚐 Sprinter Van Platform Exception Matrix (2002 – 2014)</div>
+                <p>
+                    Sprinter configurations (Freightliner, Dodge, and Mercedes chassis) rely entirely on European system architecture. 
+                    For <strong>2002–2006 legacy builds</strong>, extract the data block via <span class="code-text">Orange 5</span> and use <span class="code-text">Tango</span> (MB Page 8). 
+                    For <strong>2007–2014 modern builds</strong>, shift workflows over to the specialized <span class="code-text">SMOK Unit</span> paired with <span class="code-text">Tango</span> (MB Page 13).
+                </p>
+            </div>
+        </section>
+
+        <section id="toyota-lexus" class="chapter-container">
+            <span class="module-category">Module 09</span>
+            <h2 class="chapter-title">Toyota & Lexus Transponder ECU Engineering</h2>
+            <p>
+                Early generation Japanese variants store non-volatile immobilizer parameters on direct serial 8-pin chips inside specific standalone tracking boxes tucked deep behind the dashboard structure.
+            </p>
+
+            <div class="chip-specs">
+                <div class="spec-item">Target Application: <strong>Lexus ES/GS/LS & Toyota Camry/Avalon (1997–2003)</strong></div>
+                <div class="spec-item">Memory Component: <strong>93C56 / 93C66 (8-Pin Surface Mount SOIC)</strong></div>
+                <div class="spec-item">Hardware Options: <strong>AR32 Reader Box / Red Pen In-Circuit Stylus</strong></div>
+                <div class="spec-item">Processing Tool: <strong>Tango Engine / ZedBull Data Mirror</strong></div>
+            </div>
